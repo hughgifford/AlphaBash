@@ -1,0 +1,17 @@
+project:
+  type: book
+
+book:
+  title: My Title
+  author: Hugh Gifford^1^
+  chapters:
+    - index.qmd
+
+bibliography: /Users/hughgifford/Dropbox/PhD.bib
+
+format:
+  docx:
+    toc: false
+    number-sections: false
+    reference-doc: quarto/custom-reference-doc.docx
+    csl: quarto/nature.csl

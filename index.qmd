@@ -1,0 +1,52 @@
+# AlphaBash
+
+You can do amazing things with bash. For example, let's pick a dataset.
+
+```{r Pick-a-dataset}
+require(tidyverse)
+# There's some here https://vincentarelbundock.github.io/Rdatasets/articles/data.html
+install.packages("AER")
+require(AER)
+data(Fatalities)
+write_tsv(Fatalities,"data/fatalaties.tsv")
+```
+
+Now, let's use the awk language, named after its three creators Alfred Aho, Brian Kernighan, and Peter J. Weinberger around 1977. Note, the quarto chunk has changed language.
+
+I'm going to ask awk to print the first column of this dataframe, followed by a tab, followed by the filename. This could be useful when you want to extract a number of columns from several files and include the filename.
+
+```{bash Awk}
+awk '{print $1"\t"FILENAME}' data/fatalaties.tsv
+```
+
+# Analysing the data
+
+Once you've cleaned the data, it can be loaded into R and sorted using R verbs and plotted using ggplot2.
+
+```{r Load-data}
+x <- read_tsv("data/fatalaties.tsv")
+
+y <- x %>% filter(state!="al") %>% 
+  rename(State=state) %>% 
+  mutate(State_year=paste(State,year,sep="_")) %>% 
+  select(-c(State_year)) %>% 
+  filter(!grepl("z",State)) %>% 
+  mutate(New=gsub("1","One",spirits))
+```
+
+```{r}
+require(ggsci)
+require(ggprism)
+z <- y %>% ggplot(aes(x=spirits, 
+                      y=income, 
+                      colour=State)) +
+  geom_point() +
+  scale_colour_lancet()
+z
+```
+
+
+```{r}
+ggsave(z,file="plot.pdf",height=4,width=4)
+```
+
