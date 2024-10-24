@@ -1,14 +1,29 @@
 # AlphaBash
 
-You can do amazing things with bash. For example, let's pick a dataset. ...
+Important Chunks
+
+```{r Chunk-settings, echo=FALSE,message=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(error = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(class.output = "NoIndent")
+
+library(magick)
+library(tidyverse)
+```
+
+You can do amazing things with bash. For example, let's pick a dataset [@StephensonCurr.Trop.Med.Rep.2023]. ...
 
 ```{r Pick-a-dataset}
 require(tidyverse)
 # There's some here https://vincentarelbundock.github.io/Rdatasets/articles/data.html
-install.packages("AER")
-require(AER)
-data(Fatalities)
-write_tsv(Fatalities,"data/fatalaties.tsv")
+# install.packages("AER")
+# require(AER)
+# data(Fatalities)
+# write_tsv(Fatalities,"data/fatalaties.tsv")
 ```
 
 Now, let's use the awk language, named after its three creators Alfred Aho, Brian Kernighan, and Peter J. Weinberger around 1977. Note, the quarto chunk has changed language.
@@ -23,9 +38,43 @@ awk '{print $1"\t"FILENAME}' data/fatalaties.tsv
 
 Once you've cleaned the data, it can be loaded into R and sorted using R verbs and plotted using ggplot2.
 
-```{r Load-data}
-x <- read_tsv("data/fatalaties.tsv")
 
+
+```{r Load-and-inspect-data}
+library(tidyverse)
+library(readxl)
+x <- read_xls("data/Parental_A6_CP7_C1.xls")
+#x_short <- head(x,n=20)
+#View(x)
+```
+
+```{r Filter-out-intergenic-SNPS}
+y <- x %>% filter(Location!="intergenic")
+```
+
+```{r Exploratory-visualisation}
+y %>% ggplot(aes(x=Location,y=Tally,fill=From)) + geom_bar(stat="identity",position = position_dodge())
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r Load-data}
 y <- x %>% filter(state!="al") %>% 
   rename(State=state) %>% 
   mutate(State_year=paste(State,year,sep="_")) %>% 
@@ -34,7 +83,11 @@ y <- x %>% filter(state!="al") %>%
   mutate(New=gsub("1","One",spirits))
 ```
 
-```{r}
+# Plot large
+
+I'm just showing a figure here as an example [@HeymannInfect.Immun.2002].
+
+```{r Making-the-figure,fig.height=10,fig.width=10}
 require(ggsci)
 require(ggprism)
 z <- y %>% ggplot(aes(x=spirits, 
@@ -46,7 +99,6 @@ z
 ```
 
 
-```{r}
+```{r eval=F}
 ggsave(z,file="plot.pdf",height=4,width=4)
 ```
-
