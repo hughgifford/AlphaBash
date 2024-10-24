@@ -46,14 +46,30 @@ library(readxl)
 x <- read_xls("data/Parental_A6_CP7_C1.xls")
 #x_short <- head(x,n=20)
 #View(x)
+
+
 ```
 
 ```{r Filter-out-intergenic-SNPS}
-y <- x %>% filter(Location!="intergenic")
+y <- x %>% filter(Location!="intergenic") 
+
+# Other verbs
+x %>% select(From,To,Location,Tally) %>% select(-c(To)) %>% 
+  mutate(Gene_size=1000) %>% 
+  mutate(Tally_per_kb=(Tally/Gene_size)*100)
+
+# Other cool things
+
+x %>% mutate(Cheese=ifelse(Location=="intron","Yes","No")) %>% 
+  filter(!grepl("carboxy",Annotation)) %>% 
+  mutate(From=gsub("intron","bananas",From))
 ```
 
 ```{r Exploratory-visualisation}
-y %>% ggplot(aes(x=Location,y=Tally,fill=From)) + geom_bar(stat="identity",position = position_dodge())
+require(ggprism)
+require(ggsci)
+y %>% ggplot(aes(x=Location,y=Tally,fill=From)) + geom_bar(stat="identity",position = position_dodge()) +
+  theme_prism() + scale_fill_bmj()
 ```
 
 
