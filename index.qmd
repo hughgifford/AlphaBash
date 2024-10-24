@@ -1,6 +1,6 @@
 # AlphaBash
 
-You can do amazing things with bash. For example, let's pick a dataset.
+You can do amazing things with bash. For example, let's pick a dataset. ...
 
 ```{r Pick-a-dataset}
 require(tidyverse)
